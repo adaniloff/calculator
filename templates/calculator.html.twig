@@ -1,0 +1,72 @@
+{% extends "base.html.twig" %}
+
+{% block body %}
+{{ form_start(form) }}
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.value, {'attr': {'id': 'value'}}) }}
+        </div>
+    </div>
+
+    {% if result is not empty %}
+    <div class="row">
+        <div class="col success alert-success alert">{{ result }}</div>
+    </div>
+    {% endif %}
+
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="row">
+                <div class="col">
+                    <button type="button" class="btn-block btn btn-outline-primary" data-type="0">0</button>
+                </div>
+            </div>
+            <div class="row">
+                {% for i in 1..9 %}
+                {{ (i - 1) is divisible by(3) ? "</div><div class='row'>" : "" }}
+                <div class="col">
+                    <button type="button" class="btn-block btn btn-outline-primary" data-type="{{ i }}">{{ i }}</button>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="row">
+                <button class="btn-block btn btn-outline-primary" type="button" data-type="+">+</button>
+            </div>
+            <div class="row">
+                <button class="btn-block btn btn-outline-primary" type="button" data-type="-">-</button>
+            </div>
+            <div class="row">
+                <button class="btn-block btn btn-outline-primary" type="button" data-type="*">*</button>
+            </div>
+            <div class="row">
+                <button class="btn-block btn btn-outline-primary" type="button" data-type="/">/</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            {{ form_row(form.submit) }}
+        </div>
+        <div class="col">
+            <button class="btn btn-danger" type="button" data-clear="">Clear</button>
+        </div>
+    </div>
+{{ form_end(form) }}
+{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    <script>
+        $('[data-clear]').on('click', function (e) {
+            $('#form_value').val(null);
+        });
+        $('[data-type]').on('click', function (e) {
+            var val = $('#form_value').val() ? $('#form_value').val().toString() : "";
+            $('#form_value').val(val + $(e.target).attr('data-type'));
+        });
+    </script>
+{% endblock %}
