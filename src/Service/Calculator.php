@@ -21,13 +21,39 @@ class Calculator
      */
     public function calculate(Operation $operation)
     {
-        $sum = 0;
-
         $this->setup($operation);
 
-        
+        $matches = $this->matches;
 
-        return $sum;
+        foreach (array_reverse($this->multipliers, true) as $key => $multiplier) {
+            switch ($multiplier) {
+                case '/':
+                    $value = $matches[$key-1] / $matches[$key+1];
+                    break;
+                default:
+                    $value = $matches[$key-1] * $matches[$key+1];
+            }
+            $matches[$key-1] = 0;
+            $matches[$key+1] = 0;
+            $matches[$key] = $value;
+        }
+
+        foreach (array_reverse($this->additions, true) as $key => $addition) {
+            switch ($addition) {
+                case '-':
+                    $value = $matches[$key-1] - $matches[$key+1];
+                    break;
+                default:
+                    $value = $matches[$key-1] + $matches[$key+1];
+            }
+            $matches[$key-1] = 0;
+            $matches[$key+1] = 0;
+            $matches[$key] = $value;
+        }
+
+//        var_dump($matches);
+
+        return array_sum($matches);
     }
 
     /**
@@ -35,7 +61,7 @@ class Calculator
      */
     private function setup(Operation $operation)
     {
-        //  1 + 34 + 4 * 3 - 2 + 4
+        //  1 + 34 + (4 * 3) - 2 + 4
         preg_match_all(Operation::PATTERN, $operation->getValue(), $matches, PREG_UNMATCHED_AS_NULL);
 
         list($all, $multipliers, $additions) = $matches;
