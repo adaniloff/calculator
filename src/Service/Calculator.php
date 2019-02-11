@@ -38,7 +38,7 @@ class Calculator
             $matches[$key] = $value;
         }
 
-        foreach (array_reverse($this->additions, true) as $key => $addition) {
+        foreach ($this->additions as $key => $addition) {
             switch ($addition) {
                 case '-':
                     $value = $matches[$key-1] - $matches[$key+1];
@@ -50,8 +50,6 @@ class Calculator
             $matches[$key+1] = 0;
             $matches[$key] = $value;
         }
-
-//        var_dump($matches);
 
         return array_sum($matches);
     }
